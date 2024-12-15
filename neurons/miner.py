@@ -28,7 +28,7 @@ import graphite
 from graphite.base.miner import BaseMinerNeuron
 from graphite.protocol import IsAlive
 
-from graphite.solvers import NearestNeighbourSolver, DPSolver, NearestNeighbourMultiSolver, NearestNeighbourMultiSolver2, InsertionMultiSolver
+from graphite.solvers import NearestNeighbourSolver, DPSolver, NearestNeighbourMultiSolver, NearestNeighbourMultiSolver2, InsertionMultiSolver, multi_solver1
 from graphite.protocol import GraphV2Problem, GraphV1Synapse, GraphV2Synapse, GraphV2ProblemMulti
 from graphite.utils.graph_utils import get_multi_minmax_tour_distance
 
@@ -62,8 +62,8 @@ class Miner(BaseMinerNeuron):
             'large': NearestNeighbourSolver(),
             'multi_large_1': NearestNeighbourMultiSolver(),
             'multi_large_2': NearestNeighbourMultiSolver2(),
-            'multi_large_3': InsertionMultiSolver()
-        }
+            'multi_large_3': InsertionMultiSolver(), 
+            'multi': multi_solver1()
     
     async def is_alive(self, synapse: IsAlive) -> IsAlive:
         # hotkey = self.wallet.hotkey.ss58_address
@@ -211,19 +211,25 @@ class Miner(BaseMinerNeuron):
             synapse.solution = route
         else:
             # run all 3 basic algorithms and return the best scoring solution
-            routes_1 = await self.solvers['multi_large_1'].solve_problem(synapse.problem)
-            synapse.solution = routes_1
-            score_1 = get_multi_minmax_tour_distance(synapse)
-            routes_2 = await self.solvers['multi_large_2'].solve_problem(synapse.problem)
-            synapse.solution = routes_2
-            score_2 = get_multi_minmax_tour_distance(synapse)
-            routes_3 = await self.solvers['multi_large_3'].solve_problem(synapse.problem)
-            synapse.solution = routes_3
-            score_3 = get_multi_minmax_tour_distance(synapse)
-            routes = [routes_1, routes_2, routes_3]
-            scores = [score_1, score_2, score_3]
-            bt.logging.info(f"Selecting algorithm {scores.index(min(scores))}")
-            synapse.solution = routes[scores.index(min(scores))]
+            if False: 
+                routes_1 = await self.solvers['multi_large_1'].solve_problem(synapse.problem)
+                synapse.solution = routes_1
+                score_1 = get_multi_minmax_tour_distance(synapse)
+                routes_2 = await self.solvers['multi_large_2'].solve_problem(synapse.problem)
+                synapse.solution = routes_2
+                score_2 = get_multi_minmax_tour_distance(synapse)
+                routes_3 = await self.solvers['multi_large_3'].solve_problem(synapse.problem)
+                synapse.solution = routes_3
+                score_3 = get_multi_minmax_tour_distance(synapse)
+                routes = [routes_1, routes_2, routes_3]
+                scores = [score_1, score_2, score_3]
+                bt.logging.info(f"Selecting algorithm {scores.index(min(scores))}")
+                synapse.solution = routes[scores.index(min(scores))]
+            else: 
+                route = await self.solvers['multi'].solve_problem(synapse.problem)
+                bt.logging.info(f"Selecting algorithm  multi v1")
+                synapse.solution = route 
+
 
         # empty out large distance matrix
         synapse.problem.edges = None
