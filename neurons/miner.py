@@ -233,15 +233,17 @@ class Miner(BaseMinerNeuron):
             else: 
                 route = await self.solvers['multi'].solve_problem(synapse.problem)
                 bt.logging.info(f"Selecting algorithm  multi v1")
-                synapse.solution = route 
+                synapse.solution = route  
 
 
+        print(f'salesman no. : {len(route)}')
+        print(f'saleman correct: {synapse.problem.n_salesmen}')  
         # empty out large distance matrix
         synapse.problem.edges = None
         synapse.problem.nodes = None
-
+        
         bt.logging.info(
-            f"Miner returned value {synapse.solution} {len(synapse.solution) if isinstance(synapse.solution, list) else synapse.solution}"
+            f"Miner returned value {synapse.solution} {len(synapse.solution) if isinstance(synapse.solution, list) else 'Result is not a list'}"
         )
         return synapse
     
