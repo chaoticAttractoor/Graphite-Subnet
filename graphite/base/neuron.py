@@ -153,6 +153,12 @@ class BaseNeuron(ABC):
         else:
             return "Only Geom, Euclidean2D, and Manhatten2D supported for now."
 
+    def store_nodes(self, problem: Union[GraphV2Problem, GraphV2ProblemMulti]):
+        node_coords_np = self.loaded_datasets[problem.dataset_ref]["data"]
+        node_coords = np.array([node_coords_np[i][1:] for i in problem.selected_ids])
+        return node_coords
+   
+
     def check_registered(self):
         # --- Check for registration.
         if not self.subtensor.is_hotkey_registered(
