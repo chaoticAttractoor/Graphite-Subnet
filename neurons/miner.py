@@ -63,7 +63,7 @@ class Miner(BaseMinerNeuron):
             'multi_large_1': NearestNeighbourMultiSolver(),
             'multi_large_2': NearestNeighbourMultiSolver2(),
             'multi_large_3': InsertionMultiSolver(), 
-            'multi': multi_solver1()
+            'multi': multi_solver1()}
     
     async def is_alive(self, synapse: IsAlive) -> IsAlive:
         # hotkey = self.wallet.hotkey.ss58_address
@@ -117,7 +117,7 @@ class Miner(BaseMinerNeuron):
                 route = await self.solvers['large'].solve_problem(synapse.problem)
             synapse.solution = route
         else:
-            routes = await self.solvers['multi_large'].solve_problem(synapse.problem)
+            routes = await self.solvers['multi'].solve_problem(synapse.problem)
             synapse.solution = routes
         
         bt.logging.info(
@@ -202,7 +202,8 @@ class Miner(BaseMinerNeuron):
 
         if isinstance(synapse.problem, GraphV2Problem):
             synapse.problem.edges = self.recreate_edges(synapse.problem)
-        
+        if isinstance(synapse.problem, GraphV2ProblemMulti):
+            synapse.problem.edges = self.recreate_edges(synapse.problem)   
         bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
 
         # Conditional assignment of problems to each solver
