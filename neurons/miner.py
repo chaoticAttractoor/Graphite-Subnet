@@ -237,7 +237,7 @@ class Miner(BaseMinerNeuron):
 
 
         print(f'salesman no. : {len(route)}')
-        print(f'saleman correct: {synapse.problem.n_salesmen}')  
+       # print(f'saleman correct: {synapse.problem.n_salesmen}')  
         # empty out large distance matrix
         synapse.problem.edges = None
         synapse.problem.nodes = None
