@@ -104,6 +104,10 @@ class Miner(BaseMinerNeuron):
         if isinstance(synapse.problem, GraphV2Problem):
             # recreate problem edges for both the GraphV2Problem and GraphV2ProblemMulti which inherits from GraphV2Problem
             synapse.problem.edges = self.recreate_edges(synapse.problem)
+
+            synapse.problem.nodes = self.store_nodes(synapse.problem)
+
+            # self.recreate_edges(synapse.problem)
         
         bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
 
@@ -202,9 +206,8 @@ class Miner(BaseMinerNeuron):
 
         if isinstance(synapse.problem, GraphV2Problem):
             synapse.problem.edges = self.recreate_edges(synapse.problem)
-        if isinstance(synapse.problem, GraphV2ProblemMulti):
-            synapse.problem.edges = self.recreate_edges(synapse.problem)   
-        bt.logging.info(f"synapse dendrite timeout {synapse.timeout}")
+            synapse.problem.nodes = self.store_nodes(synapse.problem)
+
 
         # Conditional assignment of problems to each solver
         if not isinstance(synapse.problem, GraphV2ProblemMulti):

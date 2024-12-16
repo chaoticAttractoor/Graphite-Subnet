@@ -127,20 +127,22 @@ class MetricTSPV2Generator(DatasetGenerator):
     def recreate_edges(cls, problem: GraphV2Problem, loaded_datasets):
         node_coords_np = loaded_datasets[problem.dataset_ref]["data"]
         node_coords = np.array([node_coords_np[i][1:] for i in problem.selected_ids])
-        problem.nodes = node_coords
         if problem.cost_function == "Geom":
             problem.edges = geom_edges(node_coords).tolist()
-            problem.nodes = node_coords
         elif problem.cost_function == "Euclidean2D":
             problem.edges = euc_2d_edges(node_coords).tolist()
-            problem.nodes = node_coords
 
         elif problem.cost_function == "Manhatten2D":
             problem.edges = man_2d_edges(node_coords).tolist()
-            problem.nodes = node_coords
 
         else:
             return "Only Geom, Euclidean2D, and Manhatten2D supported for now."
+
+    @classmethod
+    def store_nodes(cls, problem: GraphV2Problem, loaded_datasets):
+        node_coords_np = loaded_datasets[problem.dataset_ref]["data"]
+        node_coords = np.array([node_coords_np[i][1:] for i in problem.selected_ids])
+        problem.nodes = node_coords
         
     @classmethod
     def generate_n_samples(cls, n: int, loaded_datasets):
@@ -190,7 +192,6 @@ class MetricMTSPV2Generator(DatasetGenerator):
     def recreate_edges(cls, problem: GraphV2ProblemMulti, loaded_datasets):
         node_coords_np = loaded_datasets[problem.dataset_ref]["data"]
         node_coords = np.array([node_coords_np[i][1:] for i in problem.selected_ids])
-        problem.nodes = node_coords
 
         if problem.cost_function == "Geom":
             problem.edges = geom_edges(node_coords).tolist()
@@ -200,6 +201,12 @@ class MetricMTSPV2Generator(DatasetGenerator):
             problem.edges = man_2d_edges(node_coords).tolist()
         else:
             return "Only Geom, Euclidean2D, and Manhatten2D supported for now."
+
+    @classmethod
+    def store_nodes(cls, problem: GraphV2Problem, loaded_datasets):
+        node_coords_np = loaded_datasets[problem.dataset_ref]["data"]
+        node_coords = np.array([node_coords_np[i][1:] for i in problem.selected_ids])
+        problem.nodes = node_coords
         
     @classmethod
     def generate_n_samples(cls, n: int, loaded_datasets):
