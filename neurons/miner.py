@@ -209,6 +209,7 @@ class Miner(BaseMinerNeuron):
             synapse.problem.nodes = self.store_nodes(synapse.problem)
 
 
+
         # Conditional assignment of problems to each solver
         if not isinstance(synapse.problem, GraphV2ProblemMulti):
             route = await self.solvers['large'].solve_problem(synapse.problem)
@@ -237,7 +238,8 @@ class Miner(BaseMinerNeuron):
 
         # empty out large distance matrix
         synapse.problem.edges = None
-        
+        synapse.problem.nodes = None
+
         bt.logging.info(
             f"Miner returned value {synapse.solution} {len(synapse.solution) if isinstance(synapse.solution, list) else synapse.solution}"
         )
